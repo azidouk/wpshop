@@ -1,50 +1,50 @@
 package com.wpshop.model;
 
-public class Offer implements org.springframework.hateoas.Identifiable{
+import java.util.Objects;
 
-    private long id;
-    private String name;
-    private String description;
-    private Price price;
+public final class Offer {
 
-    protected Offer() {}
+    private final long id;
+    private final String name;
+    private final String description;
+    private final Price price;
 
-    public Offer(String name, String description, float price, Currency currency)
-    {
+    public Offer(String name, String description, Price price) {
         this.name = name;
         this.description = description;
-        this.price = new Price(price, currency);
-    }
-
-    public Long getId () {
-        return id;
-    }
-
-    public void setId() {
+        this.price = price;
         this.id = IdGenerator.getNextId();
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Price getPrice() {
         return price;
     }
 
-    public void setPrice(Price price) {
-        this.price = price;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Offer offer = (Offer) o;
+        return id == offer.id &&
+                Objects.equals(name, offer.name) &&
+                Objects.equals(description, offer.description) &&
+                Objects.equals(price, offer.price);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, price);
     }
 }

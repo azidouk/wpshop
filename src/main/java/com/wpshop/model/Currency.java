@@ -5,7 +5,7 @@ package com.wpshop.model;
     GBP("GBP"),
     EUR("EUR");
 
-    private String name;
+    private final String name;
 
     Currency(String currency) {
         this.name = currency;

@@ -1,38 +1,40 @@
 package com.wpshop.model;
 
+import com.wpshop.utils.RepositoryManager;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
-public class Store {
+public class Store implements RepositoryManager {
 
-    private Map<Long, Offer> elements;
+    private Map<Long, Offer> offersById;
 
     public Store() {
-        elements = new HashMap<>();
+        offersById = new ConcurrentHashMap<>();
     }
 
-    public Offer createOffer(Offer element) {
-        element.setId();
-        elements.put(element.getId(), element);
-        return element;
+    public Offer createOffer(String name, String description, Price price) {
+        Offer offer = new Offer(name, description, price);
+        offersById.put(offer.getId(), offer);
+        return offer;
     }
 
-    public List<Offer> findAllOffers() {
-        return new ArrayList<>(elements.values());
+    public List<Offer> getAllOffers() {
+        return new ArrayList<>(offersById.values());
     }
 
-    public Optional<Offer> findOfferById(long id) {
-        return Optional.ofNullable(elements.get(id));
+    public Optional<Offer> getOfferById(long id) {
+        return Optional.ofNullable(offersById.get(id));
     }
 
     public void clear() {
-        elements.clear();
+        offersById.clear();
         IdGenerator.reset();
     }
 
     public int size() {
-        return elements.size();
+        return offersById.size();
     }
 }

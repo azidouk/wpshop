@@ -2,23 +2,34 @@ package com.wpshop.utils;
 
 import com.wpshop.model.Currency;
 import com.wpshop.model.Offer;
+import com.wpshop.model.Price;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class Common {
 
-    public static Offer createOffer(int index) {
-        return new Offer("Offer" + index,
-                "Description" + index,
-                1000,
-                Currency.GBP);
+    public static Offer createOffer(RepositoryManager manager, int index) {
+        return manager.createOffer("Offer" + index, "Description" + index,
+                new Price(1000, Currency.GBP));
     }
 
-    public static void assertMatch(Offer offer1, Offer offer2){
-        assertEquals(offer1.getId(), offer2.getId());
-        assertEquals(offer1.getName(), offer2.getName());
-        assertEquals(offer1.getDescription(), offer2.getDescription());
-        assertEquals(offer1.getPrice().getPrice(), offer2.getPrice().getPrice(), 0.001);
-        assertEquals(offer1.getPrice().getCurrency().getName(), offer2.getPrice().getCurrency().getName());
+    private static Offer[] createMultipleOffers(RepositoryManager manager, int maxSize) {
+        Offer[] created = new Offer[maxSize];
+        for (int i = 0; i < maxSize; i++) {
+            created[i] = createOffer(manager, i);
+        }
+        return created;
+    }
+
+    public static void findAllOffers(RepositoryManager manager, MessageCatalogue catalogue) {
+        int maxSize = 5;
+        Offer[] created = Common.createMultipleOffers(manager, maxSize);
+        List<Offer> offers = manager.getAllOffers();
+        assertEquals(catalogue.get("test.fail.failMultipleOffers", new Integer[]{maxSize}), maxSize, offers.size());
+        for (int i = 0; i < offers.size(); i++) {
+            assertEquals(created[i], offers.get(i));
+        }
     }
 }
